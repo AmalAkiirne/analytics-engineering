@@ -4,18 +4,6 @@ An end-to-end analytics engineering project built with **Python, Google BigQuery
 
 The project transforms raw transactional data into tested, analytics-ready models using an ELT architecture and a dimensional model designed for business intelligence.
 
-## Table of Contents
-
-* [Project Overview](#project-overview)
-* [Architecture](#architecture)
-* [Technology Stack](#technology-stack)
-* [Dimensional Modeling Structure](#dimensional-modeling-structure)
-* [Data Lineage](#data-lineage)
-* [Data Quality and Testing](#data-quality-and-testing)
-* [Power BI Reports](#power-bi-reports)
-* [Local Setup](#local-setup)
-
-
 ## Project Overview
 
 The objective of this project is to build a reproducible analytics engineering workflow that transforms raw e-commerce data into a structured analytical model for reporting and decision-making.

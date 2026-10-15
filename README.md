@@ -124,7 +124,7 @@ Explores sales performance, revenue distribution, product performance, and selle
 Examines delivery delays by comparing estimated and actual delivery dates, and explores their association with customer review scores.
 ![Logistics](assets/pbi_logistics.png)
 The analysis is descriptive and diagnostic. Observed relationships between delivery delays and review scores should not be interpreted as proof of causation.
-> **Power BI Report File:** download the complete `.pbix` file [here](./reports/olist_ecommerce_report.pbix) to explore the data model, relationships, and DAX measures locally.
+> **Power BI Report File:** download the complete `.pbix` file [here](./bi/olist_ecommerce_report.pbix) to explore the data model, relationships, and DAX measures locally.
 
 
 

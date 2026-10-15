@@ -1,0 +1,27 @@
+# virtual env
+.venv/
+
+# cache
+__pycache__/
+
+
+# dbt
+dbt_analytics_transform/target/
+dbt_analytics_transform/dbt_packages/
+dbt_analytics_transform/logs/
+
+# Id
+.env
+
+# logs
+logs
+
+# configuration IDE
+.vscode/
+
+# Temporary files
+src/temporary_file.py
+sql
+
+# CSV files
+brazilian_Ecommerce_csv_files

@@ -1,0 +1,134 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Customer dimension enriched with geographic data"
+    columns:
+      - name: customer_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "Global unique customer identifier (to track multiple orders from the same customer)"
+        tests:
+          - not_null
+      - name: customer_city
+        description: "Normalized city"
+      - name: customer_state
+        description: "One of the 27 states of Brazil"
+        tests:
+          - accepted_values:
+              values: ["SP","RN","AC","RJ","ES","MG",	"BA",	"SE","PE","AL","PB","CE","PI","MA","PA","AP","AM","RR","DF","GO","RO","TO","MT","MS","RS","PR","SC"]
+      - name: customer_zip_code_prefix
+        description: "first five digits of customer zip code"
+      - name: latitude
+        description: "Average of all latitude values from geolocation dataset"
+      - name: longitude
+        description: "Average of all longitude values from geolocation dataset"
+
+  - name: dim_products
+    description: "Streamlined product dimensions, retaining only the attributes useful for analysis."
+    columns:
+      - name: product_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: product_category_name
+        description: "Product category string"
+
+  - name: dim_sellers
+    description: "Sellers dimension for each product"
+    columns:
+      - name: seller_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: seller_zip_code_prefix
+        description: "first five digits of seller zip code"
+      - name: seller_city
+        description: "Normalized city"
+      - name: seller_state
+        description: "One of the 27 states of Brazil"
+        tests:
+          - accepted_values:
+              values: ["SP","RN","AC","RJ","ES","MG",	"BA",	"SE","PE","AL","PB","CE","PI","MA","PA","AP","AM","RR","DF","GO","RO","TO","MT","MS","RS","PR","SC"]
+      - name: latitude
+        description: "Average of all latitude values from geolocation dataset"
+      - name: longitude
+        description: "Average of all longitude values from geolocation dataset"
+
+  - name: dim_orders
+    description: "Macro-level order fact table with customer reviews included"
+    columns:
+      - name: order_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: order_status
+        description: "Reference to the order status (delivered, shipped, etc)."
+        tests:
+          - accepted_values:
+              values: ["approved","canceled","created","delivered","invoiced","processing","shipped","unavailable"]
+      - name: order_purchase_timestamp
+        description: "Purchase timestamp"
+      - name: order_approved_at
+        description: "Shows the payment approval timestamp."
+      - name: nb_reviews
+        description: "Number of reviews per order"
+      - name: average_score
+        description: "Average of Note ranging from 1 to 5 given by the customer on satisfaction surveys."
+      - name: order_delivered_carrier_date
+        description: "Shows the order posting timestamp. When it was handled to the logistic partner."
+      - name: order_delivered_customer_date
+        description: "Shows the actual order delivery date to the customer."
+      - name: order_estimated_delivery_date
+        description: "Shows the estimated delivery date that was informed to customer at the purchase moment."
+
+  - name: fct_order_items
+    description: "Detailed fact table at the line-item level"
+    columns:
+      - name: order_id
+        description: "order unique identifier"
+        tests:
+          - not_null
+      - name: order_item_id
+        description: "sequential number identifying number of items included in the same order."
+        tests:
+          - not_null
+      - name: product_id
+        description: "product unique identifier"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+      - name: seller_id
+        description: "seller unique identifier"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_sellers')
+              field: seller_id
+      - name: customer_id
+        description: "Injected foreign key to enable sharing of the customer dimension."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: price
+        description: "item price"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: freight_value
+        description: "item freight value item (if an order has more than one item the freight value is splitted between items)"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: shipping_limit_date
+        description: "Shows the seller shipping limit date for handling the order over to the logistic partner."
